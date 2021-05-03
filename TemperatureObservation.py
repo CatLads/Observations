@@ -4,14 +4,30 @@ import numpy as np
 
 
 class TemperatureObservation(ObservationBuilder):
+    """Observation for the Flatland environment based on thermodynamics
+
+    Args:
+        ObservationBuilder (ObservationBuilder): The ObservationBuilder class provided by Flatland.
+    """
+
     def reset(self):
+        """Resets the observation, filling the arrays with zeros and
+
+        Returns:
+            tuple: The observation and the info dictionary
+        """
         self.rail_obs = np.zeros(
             (self.env.height, self.env.width, len(self.env.agents)))
         return self.rail_obs, {}
 
     def relax_temperature(self, handle: int = 0):
-        """
-        Relax the temperature
+        """Propagates the temperature using a Gaussian Filter
+
+        Args:
+            handle (int, optional): The train we're providing the observation from. Defaults to 0.
+
+        Returns:
+            np.array: The relaxed observation
         """
         relaxed = ndimage.gaussian_filter(self.rail_obs[:, :, handle], 1)
         mask = self.env.rail.grid > 0
@@ -19,6 +35,11 @@ class TemperatureObservation(ObservationBuilder):
         return relaxed
 
     def get(self, handle: int = 0) -> (np.ndarray):
+        """Builds the actual observation for a single train
+
+        Returns:
+            np.ndarray: The observation for a single train
+        """
         agent = self.env.agents[handle]
         x_target = agent.target[0]
         y_target = agent.target[1]

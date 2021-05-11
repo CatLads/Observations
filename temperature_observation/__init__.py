@@ -1,0 +1,1 @@
+from temperature_observation import TemperatureObservation

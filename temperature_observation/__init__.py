@@ -1,1 +1,1 @@
-from temperature_observation import TemperatureObservation
+from .temperature_observation import TemperatureObservation

@@ -54,6 +54,4 @@ class TemperatureObservation(ObservationBuilder):
                               other_agent.target[1], handle] = 0.5
 
         self.rail_obs[x_target, y_target, handle] = -1
-
-        self.relax_temperature(handle)
-        return self.rail_obs[:, :, handle]
+        return self.relax_temperature(handle)

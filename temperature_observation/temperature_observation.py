@@ -31,7 +31,7 @@ class TemperatureObservation(ObservationBuilder):
         """
         relaxed = ndimage.gaussian_filter(self.rail_obs[:, :, handle], 1)
         mask = self.env.rail.grid > 0
-        relaxed[~mask] = np.inf
+        relaxed[~mask] = 1e4
         return relaxed
 
     def get(self, handle: int = 0) -> (np.ndarray):

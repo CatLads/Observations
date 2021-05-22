@@ -10,7 +10,8 @@ def normalize_observation(observation):
     Returns:
         np.ndarray: Flattened observation
     """
-    return observation.flatten()
+
+    return observation
 
 
 def format_action_prob(action_probs):

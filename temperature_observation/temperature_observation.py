@@ -1,9 +1,10 @@
-from flatland.envs.observations import ObservationBuilder
+from flatland.envs.observations import TreeObsForRailEnv
+
 from scipy import ndimage
 import numpy as np
 
 
-class TemperatureObservation(ObservationBuilder):
+class TemperatureObservation(TreeObsForRailEnv):
     """Observation for the Flatland environment based on thermodynamics
 
     Args:
@@ -16,9 +17,9 @@ class TemperatureObservation(ObservationBuilder):
         Returns:
             tuple: The observation and the info dictionary
         """
+        super().reset()
         self.rail_obs = np.zeros(
             (self.env.height, self.env.width, len(self.env.agents)))
-        return self.rail_obs, {}
 
     def relax_temperature(self, handle: int = 0):
         """Propagates the temperature using a Gaussian Filter
@@ -40,6 +41,7 @@ class TemperatureObservation(ObservationBuilder):
         Returns:
             np.ndarray: The observation for a single train
         """
+        tree_obs = super().get(handle)
         agent = self.env.agents[handle]
         x_target = agent.target[0]
         y_target = agent.target[1]
@@ -54,4 +56,4 @@ class TemperatureObservation(ObservationBuilder):
                               other_agent.target[1], handle] = 0.5
 
         self.rail_obs[x_target, y_target, handle] = -1
-        return self.relax_temperature(handle)
+        return self.relax_temperature(handle), tree_obs

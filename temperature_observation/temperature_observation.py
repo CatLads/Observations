@@ -30,7 +30,7 @@ class TemperatureObservation(TreeObsForRailEnv):
         Returns:
             np.array: The relaxed observation
         """
-        relaxed = ndimage.gaussian_filter(self.rail_obs[:, :, handle], 1)
+        relaxed = ndimage.gaussian_filter(self.rail_obs[:, :, handle], 10)
         mask = self.env.rail.grid > 0
         relaxed[~mask] = 1
         return relaxed

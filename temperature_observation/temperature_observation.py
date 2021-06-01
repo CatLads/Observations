@@ -19,7 +19,7 @@ class TemperatureObservation(TreeObsForRailEnv):
         """
         super().reset()
         self.rail_obs = np.zeros(
-            (self.env.height, self.env.width, len(self.env.agents)))
+            (4, self.env.height, self.env.width, len(self.env.agents)))
 
     def relax_temperature(self, handle: int = 0):
         """Propagates the temperature using a Gaussian Filter
@@ -30,9 +30,9 @@ class TemperatureObservation(TreeObsForRailEnv):
         Returns:
             np.array: The relaxed observation
         """
-        relaxed = ndimage.gaussian_filter(self.rail_obs[:, :, handle], 10)
+        relaxed = ndimage.gaussian_filter(self.rail_obs[:3, :, :, handle], 10)
         mask = self.env.rail.grid > 0
-        relaxed[~mask] = 1
+        relaxed[:, ~mask] = 1
         return relaxed
 
     def get(self, handle: int = 0) -> (np.ndarray):
@@ -50,10 +50,13 @@ class TemperatureObservation(TreeObsForRailEnv):
             x = other_agent.position[0] if other_agent.position is not None else None
             y = other_agent.position[1] if other_agent.position is not None else None
             if handle != i:
-                self.rail_obs[x, y, i] = 1
+                self.rail_obs[0, x, y, i] = 1
                 # This heats up others trains' stations
-                self.rail_obs[other_agent.target[0],
-                              other_agent.target[1], handle] = 0.5
+                self.rail_obs[1, other_agent.target[0],
+                              other_agent.target[1], handle] = 1
 
-        self.rail_obs[x_target, y_target, handle] = -1
+        self.rail_obs[2, x_target, y_target, handle] = 1
+        x = agent.position[0] if agent.position is not None else None
+        y = agent.position[1] if agent.position is not None else None
+        self.rail_obs[3, x, y, handle]
         return self.relax_temperature(handle), tree_obs

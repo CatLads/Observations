@@ -74,7 +74,7 @@ def norm_obs_clip(obs, clip_min=-1, clip_max=1, fixed_radius=0, normalize_to_ran
 
 
 def _split_node_into_feature_groups(node) -> (np.ndarray, np.ndarray, np.ndarray):
-    data = np.zeros(7)
+    data = np.zeros(10)
     distance = np.zeros(1)
     agent_data = np.zeros(4)
 
@@ -104,7 +104,7 @@ def _split_subtree_into_feature_groups(node, current_tree_depth: int, max_tree_d
         remaining_depth = max_tree_depth - current_tree_depth
         # reference: https://stackoverflow.com/questions/515214/total-number-of-nodes-in-a-tree-data-structure
         num_remaining_nodes = int((4 ** (remaining_depth + 1) - 1) / (4 - 1))
-        return [-np.inf] * num_remaining_nodes * 7, [-np.inf] * num_remaining_nodes, [-np.inf] * num_remaining_nodes * 4
+        return [-np.inf] * num_remaining_nodes * 10, [-np.inf] * num_remaining_nodes, [-np.inf] * num_remaining_nodes * 4
 
     data, distance, agent_data = _split_node_into_feature_groups(node)
 

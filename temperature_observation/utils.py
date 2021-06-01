@@ -84,7 +84,10 @@ def _split_node_into_feature_groups(node) -> (np.ndarray, np.ndarray, np.ndarray
     data[3] = node.dist_potential_conflict
     data[4] = node.dist_unusable_switch
     data[5] = node.dist_to_next_branch
-    data[6] = node.temperature
+    data[6] = node.temperature_other_trains
+    data[7] = node.temperature_other_trains
+    data[8] = node.temperature_own_station
+    data[9] = node.temperature_own_position
 
     distance[0] = node.dist_min_to_target
 

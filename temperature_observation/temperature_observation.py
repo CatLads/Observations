@@ -31,7 +31,7 @@ Node = collections.namedtuple('Node', 'dist_own_target_encountered '
                               'temperature_own_position')
 
 
-class TemperatureObservation(ObservationBuilder):
+class TemperatureObservation(TreeObsForRailEnv):
     """Observation for the Flatland environment based on thermodynamics
 
     Args:
@@ -84,8 +84,8 @@ class TemperatureObservation(ObservationBuilder):
                                       other_agent.target[1], handle] = 1
 
         self.temperature_grid[2, x_target, y_target, handle] = 1
-        x = agent.position[0] if other_agent.position is not None else None
-        y = agent.position[1] if other_agent.position is not None else None
+        x = agent.position[0] if agent.position is not None else None
+        y = agent.position[1] if agent.position is not None else None
         self.temperature_grid[3, x, y, handle] = 1
         return self.relax_temperature(handle)
 
@@ -174,16 +174,16 @@ class TemperatureObservation(ObservationBuilder):
         agent = self.env.agents[handle]  # TODO: handle being treated as index
 
         if agent.status == RailAgentStatus.READY_TO_DEPART:
-            agent_virtual_position = agent.initial_position
+            position = agent.initial_position
         elif agent.status == RailAgentStatus.ACTIVE:
-            agent_virtual_position = agent.position
+            position = agent.position
         elif agent.status == RailAgentStatus.DONE:
-            agent_virtual_position = agent.target
+            position = agent.target
         else:
             return None
 
         possible_transitions = self.env.rail.get_transitions(
-            *agent_virtual_position, agent.direction)
+            *position, agent.direction)
         num_transitions = np.count_nonzero(possible_transitions)
 
         # Here information about the agent itself is stored
@@ -193,17 +193,17 @@ class TemperatureObservation(ObservationBuilder):
                                      dist_other_agent_encountered=0, dist_potential_conflict=0,
                                      dist_unusable_switch=0, dist_to_next_branch=0,
                                      dist_min_to_target=distance_map[
-                                         (handle, *agent_virtual_position,
+                                         (handle, *position,
                                           agent.direction)],
                                      num_agents_same_direction=0, num_agents_opposite_direction=0,
                                      num_agents_malfunctioning=agent.malfunction_data['malfunction'],
                                      speed_min_fractional=agent.speed_data['speed'],
                                      num_agents_ready_to_depart=0,
                                      childs={},
-                                     temperature_other_trains=agent_temperature[agent_virtual_position][0],
-                                     temperature_other_stations=agent_temperature[agent_virtual_position][1],
-                                     temperature_own_station=agent_temperature[agent_virtual_position][2],
-                                     temperature_own_position=agent_temperature[agent_virtual_position][3])
+                                     temperature_other_trains=agent_temperature[0][position],
+                                     temperature_other_stations=agent_temperature[1][position],
+                                     temperature_own_station=agent_temperature[2][position],
+                                     temperature_own_position=agent_temperature[3][position])
 
         #print("root node type:", type(root_node_observation))
 
@@ -221,7 +221,7 @@ class TemperatureObservation(ObservationBuilder):
 
             if possible_transitions[branch_direction]:
                 new_cell = get_new_position(
-                    agent_virtual_position, branch_direction)
+                    position, branch_direction)
 
                 branch_observation, branch_visited = \
                     self._explore_branch(
@@ -447,10 +447,10 @@ class TemperatureObservation(ObservationBuilder):
                     speed_min_fractional=min_fractional_speed,
                     num_agents_ready_to_depart=other_agent_ready_to_depart_encountered,
                     childs={},
-                    temperature_other_trains=agent_temperature[position][0],
-                    temperature_other_stations=agent_temperature[position][1],
-                    temperature_own_station=agent_temperature[position][2],
-                    temperature_own_position=agent_temperature[position][3])
+                    temperature_other_trains=agent_temperature[0][position],
+                    temperature_other_stations=agent_temperature[1][position],
+                    temperature_own_station=agent_temperature[2][position],
+                    temperature_own_position=agent_temperature[3][position])
         # #############################
         # #############################
         # Start from the current orientation, and see which transitions are available;

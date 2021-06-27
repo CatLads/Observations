@@ -1,7 +1,6 @@
 from flatland.envs.observations import TreeObsForRailEnv
 import numpy as np
 
-
 def format_action_prob(action_probs):
     """Generates a probability string 
 

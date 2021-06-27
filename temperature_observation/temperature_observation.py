@@ -65,6 +65,7 @@ class TemperatureObservation(TreeObsForRailEnv):
         temp[:, ~mask] = 0
         return temp
 
+
     def get_temperature(self, handle: int = 0) -> (np.ndarray):
         """Builds the actual observation for a single train
 
@@ -495,3 +496,4 @@ class TemperatureObservation(TreeObsForRailEnv):
         if depth == self.max_depth:
             node.childs.clear()
         return node, visited
+

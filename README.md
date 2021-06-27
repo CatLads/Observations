@@ -4,13 +4,7 @@ This repo contains the work we've done on observations for the Flatland environm
 
 ## TemperatureObservation
 The idea actually started from an outlook to the universe. _What if trains actually behaved like they were planets, attracted to their target station?_
-The approach seemed interesting: planets interacts one with another by means of Newton's law of universal gravitation: 
-
-<!-- $$
-   F = G \frac{m1m2}{r^2}
-$$ --> 
-
-<div align="center"><img style="background: white;" src="https://render.githubusercontent.com/render/math?math=%20%20%20F%20%3D%20G%20%5Cfrac%7Bm1m2%7D%7Br%5E2%7D"></div>
+The approach seemed interesting: planets interacts one with another by means of Newton's law of universal gravitation.
 
 If we consider trains as planets then they have they're own mass. We can assume that each train's mass is really low compared to the one of its station.
 Each train is guided to its station by following the direction of the force.
